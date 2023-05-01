@@ -2,9 +2,12 @@
   "sqltools.connections": [
     {
       "previewLimit": 100,
-      "driver": "SQLite",
-      "name": "dev",
-      "database": "${workspaceFolder:drawtheyear}/backend/db/dev.db"
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "Dev",
+      "database": "dty",
+      "username": "postgres"
     }
   ]
 }
