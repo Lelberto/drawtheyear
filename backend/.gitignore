@@ -4,9 +4,6 @@
 # Output
 /dist
 
-# Databases
-/db
-
 # Dependencies
 /node_modules
 
