@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { UserRepository } from './repositories/user.repository';
 import { CryptoService } from '../../crypto/crypto.service';
+import { CreateUserDTO } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -26,12 +27,12 @@ export class UserService {
     return await this.userRepo.findOneBy({ email });
   }
 
-  public async create(data: Partial<User>): Promise<User> {
-    const finalData = { ...data };
-    if (finalData.password) {
-      finalData.password = await this.cryptoService.hash(finalData.password);
+  public async create(dto: CreateUserDTO): Promise<User> {
+    const data = { ...dto };
+    if (data.password) {
+      data.password = await this.cryptoService.hash(data.password);
     }
-    const user = this.userRepo.create(finalData);
+    const user = this.userRepo.create(data);
     return await this.userRepo.save(user);
   }
 }
