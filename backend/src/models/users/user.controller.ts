@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
-import { FindByUsernameParams } from './dto/user.dto';
+import { CreateUserDTO, FindByUsernameParams } from './dto/user.dto';
 
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
 
   private readonly userService: UserService;
@@ -22,7 +23,7 @@ export class UserController {
   }
 
   @Post()
-  public async create(@Body() dto: any) {
+  public async create(@Body() dto: CreateUserDTO) {
     return await this.userService.create(dto);
   }
 }

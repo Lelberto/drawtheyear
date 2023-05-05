@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { CryptoService } from '../../crypto/crypto.service';
 import { User } from './entities/user.entity';
 import { UserRepository } from './repositories/user.repository';
-import { CryptoService } from '../../crypto/crypto.service';
-import { CreateUserDTO } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
@@ -31,12 +30,12 @@ export class UserService {
     return await this.userRepo.findOneBy({ username });
   }
 
-  public async create(dto: CreateUserDTO): Promise<User> {
-    const data = { ...dto };
-    if (data.password) {
-      data.password = await this.cryptoService.hash(data.password);
+  public async create(data: Partial<User>): Promise<User> {
+    const finalData = { ...data };
+    if (finalData.password) {
+      finalData.password = await this.cryptoService.hash(finalData.password);
     }
-    const user = this.userRepo.create(data);
+    const user = this.userRepo.create(finalData);
     return await this.userRepo.save(user);
   }
 }

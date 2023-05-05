@@ -5,7 +5,8 @@ export class CreateUserDTO {
   @IsEmail()
   email: string;
 
-  password?: string;
+  @IsString()
+  password: string;
 
   @IsString()
   @Length(3, 16)
