@@ -21,7 +21,7 @@ export class User {
     nullable: true
   })
   @Exclude({ toPlainOnly: true })
-  password: string;
+  password?: string;
 
   @Column({
     type: 'varchar',
