@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
   name: 'users'
@@ -10,7 +10,8 @@ export class User {
 
   @Column({
     type: 'varchar',
-    length: 100
+    length: 100,
+    unique: true
   })
   email: string;
 
@@ -22,7 +23,8 @@ export class User {
 
   @Column({
     type: 'varchar',
-    length: 16
+    length: 16,
+    unique: true
   })
   username: string;
 
@@ -31,4 +33,9 @@ export class User {
     length: 32
   })
   displayName: string;
+
+  @BeforeInsert()
+  formatUsername() {
+    this.username = this.username.replace(/[^a-zA-Z0-9]/g, '').substring(0, 16).toLowerCase(); // TODO If generated username already exists, the current user will not be able to create himself
+  }
 }
