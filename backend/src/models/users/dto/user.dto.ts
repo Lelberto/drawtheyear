@@ -15,3 +15,9 @@ export class CreateUserDTO {
   @Length(3, 32)
   displayName: string;
 }
+
+export class FindByUsernameParams {
+
+  @IsString()
+  username: string;
+}
