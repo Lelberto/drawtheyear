@@ -1,9 +1,10 @@
 import { Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO, FindByUsernameParams } from './dto/user.dto';
+import { ResponseFormatterInterceptor } from '../../common/interceptors/response-formatter.interceptor';
 
 @Controller('users')
-@UseInterceptors(ClassSerializerInterceptor)
+@UseInterceptors(ClassSerializerInterceptor, ResponseFormatterInterceptor)
 @UsePipes(ValidationPipe)
 export class UserController {
 
