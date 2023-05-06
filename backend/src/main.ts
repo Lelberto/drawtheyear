@@ -7,7 +7,7 @@ import { ConfigService, ConfigType } from '@nestjs/config';
 import logConfig from './config/log.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   const config = app.get(ConfigService);
 
   app.useLogger(createLogger(config.get<ConfigType<typeof logConfig>>('log').path));

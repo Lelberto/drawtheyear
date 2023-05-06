@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
+import { FileLogger } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import databaseConfig from '../config/database.config';
+import logConfig from '../config/log.config';
 import { User } from '../models/users/entities/user.entity';
 
 @Module({
@@ -18,7 +21,8 @@ import { User } from '../models/users/entities/user.entity';
         entities: [User],
         synchronize: true,
         namingStrategy: new SnakeNamingStrategy(),
-        logging: true
+        logging: true,
+        logger: new FileLogger('all', { logPath: join(config.get<ConfigType<typeof logConfig>>('log').path, 'database.log') })
       }),
       inject: [ConfigService]
     }),
