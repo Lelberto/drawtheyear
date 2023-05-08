@@ -2,6 +2,7 @@ import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { ConfigurationModule } from './config/configuration.module';
 import { DatabaseModule } from './database/database.module';
+import { EmotionModule } from './models/emotions/emotion.module';
 import { UserModule } from './models/users/user.module';
 
 @Module({
@@ -9,7 +10,8 @@ import { UserModule } from './models/users/user.module';
     ConfigurationModule,
     DatabaseModule,
     AuthModule,
-    UserModule
+    UserModule,
+    EmotionModule
   ]
 })
 export class AppModule implements OnModuleInit {

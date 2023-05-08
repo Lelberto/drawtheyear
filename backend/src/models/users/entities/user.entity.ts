@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Emotion } from '../../emotions/entities/emotion.entity';
 import { Role } from '../../../common/constants/role.enum';
 
 @Entity({
@@ -9,6 +10,9 @@ export class User {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToMany(() => Emotion, emotion => emotion.user)
+  emotions: Emotion[];
 
   @Column({
     type: 'enum',

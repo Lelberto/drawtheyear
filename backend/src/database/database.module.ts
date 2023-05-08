@@ -7,6 +7,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import databaseConfig from '../config/database.config';
 import logConfig from '../config/log.config';
 import { User } from '../models/users/entities/user.entity';
+import { Emotion } from '../models/emotions/entities/emotion.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { User } from '../models/users/entities/user.entity';
         username: config.get<ConfigType<typeof databaseConfig>>('database').user,
         password: config.get<ConfigType<typeof databaseConfig>>('database').password,
         database: config.get<ConfigType<typeof databaseConfig>>('database').db,
-        entities: [User],
+        entities: [User, Emotion],
         synchronize: true,
         namingStrategy: new SnakeNamingStrategy(),
         logging: true,
