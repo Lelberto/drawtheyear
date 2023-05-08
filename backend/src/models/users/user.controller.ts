@@ -1,6 +1,6 @@
 import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Post, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UpdateParams, CreateUserDTO, FindByUsernameParams, UpdateUserDTO } from './dto/user.dto';
+import { UpdateUserParams, CreateUserDTO, FindByUsernameParams, UpdateUserDTO } from './dto/user.dto';
 import { ResponseFormatterInterceptor } from '../../common/interceptors/response-formatter.interceptor';
 
 @Controller('users')
@@ -30,7 +30,7 @@ export class UserController {
   }
 
   @Patch(':username')
-  public async update(@Param() params: UpdateParams, @Body() dto: UpdateUserDTO) {
+  public async update(@Param() params: UpdateUserParams, @Body() dto: UpdateUserDTO) {
     await this.userService.update(params.username, dto);
   }
 }

@@ -32,7 +32,7 @@ export class FindByUsernameParams {
   username: string;
 }
 
-export class UpdateParams {
+export class UpdateUserParams {
 
   @IsString()
   username: string;
