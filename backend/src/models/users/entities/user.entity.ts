@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from '../../../common/constants/role.enum';
 
 @Entity({
   name: 'users'
@@ -8,6 +9,13 @@ export class User {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.USER
+  })
+  role: Role;
 
   @Column({
     type: 'varchar',
