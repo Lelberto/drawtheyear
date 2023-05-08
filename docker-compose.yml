@@ -3,6 +3,8 @@ services:
   dty_backend:
     container_name: dty_backend
     image: node:18
+    depends_on:
+      - database
     working_dir: /var/www/html/app
     entrypoint: /bin/bash -c "npm run start:dev"
     ports:
@@ -20,3 +22,12 @@ services:
     volumes:
       - ./frontend/:/var/www/html/app
     tty: true
+  database:
+    container_name: dty_database
+    image: postgres:15.2
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/:/var/lib/postgresql/data
+    env_file:
+      - ./backend/.env
