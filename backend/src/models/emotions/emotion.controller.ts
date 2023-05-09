@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AbilityFactory } from '../../casl/ability.factory';
 import { Action } from '../../casl/action.enum';
 import { ReqUser } from '../../common/decorators/request-user.decorator';
@@ -8,6 +8,8 @@ import { ResponseFormatterInterceptor } from '../../common/interceptors/response
 import { User } from '../users/entities/user.entity';
 import { CreateEmotionDTO, DeleteEmotionParams, UpdateEmotionDTO, UpdateEmotionParams } from './dto/emotion.dto';
 import { EmotionService } from './emotion.service';
+import { Emotion } from './entities/emotion.entity';
+import { ResolveEmotionPipe } from '../../common/pipes/resolve-emotion.pipe';
 
 @Controller('emotions')
 @UseInterceptors(ClassSerializerInterceptor, ResponseFormatterInterceptor)
@@ -26,6 +28,11 @@ export class EmotionController {
   @Get()
   public async findAll(@ReqUser() user: User) {
     return await this.emotionService.findByUser(user);
+  }
+
+  @Get(':emotionId')
+  public async findById(@Param('emotionId', ParseIntPipe, ResolveEmotionPipe) emotion: Emotion) {
+    return emotion;
   }
 
   @Post()
