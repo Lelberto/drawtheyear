@@ -39,7 +39,7 @@ export class UserController {
 
   @Patch(':username')
   @UseGuards(JwtAuthGuard)
-  public async update(@ReqUser() authUser: User, @Param(ResolveUserPipe) user: User, @Body() dto: UpdateUserDTO) {
+  public async update(@ReqUser() authUser: User, @Param('username', ResolveUserPipe) user: User, @Body() dto: UpdateUserDTO) {
     const ability = this.abilityFactory.createForUser(authUser);
     if (ability.cannot(Action.UPDATE, user)) {
       throw new UnauthorizedException('You can\'t update this user');
