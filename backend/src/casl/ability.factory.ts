@@ -20,6 +20,7 @@ export class AbilityFactory {
           can(Action.READ, Emotion);
           can(Action.CREATE, Emotion);
           can(Action.UPDATE, Emotion, { userId: user.id });
+          can(Action.DELETE, Emotion, { userId: user.id });
           break;
       }
     }, {

@@ -32,4 +32,8 @@ export class EmotionService {
   public async update(emotion: Emotion, data: Partial<Emotion>): Promise<Emotion> {
     return await this.emotionRepo.save({ ...emotion, ...data });
   }
+
+  public async delete(emotion: Emotion): Promise<void> {
+    await this.emotionRepo.delete(emotion.id);
+  }
 }

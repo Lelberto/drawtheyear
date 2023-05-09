@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, NotFoundException, Param, Patch, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, NotFoundException, Param, Patch, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AbilityFactory } from '../../casl/ability.factory';
 import { Action } from '../../casl/action.enum';
 import { ReqUser } from '../../common/decorators/request-user.decorator';
@@ -6,7 +6,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { ResponseFormatterInterceptor } from '../../common/interceptors/response-formatter.interceptor';
 import { User } from '../users/entities/user.entity';
-import { CreateEmotionDTO, UpdateEmotionDTO, UpdateEmotionParams } from './dto/emotion.dto';
+import { CreateEmotionDTO, DeleteEmotionParams, UpdateEmotionDTO, UpdateEmotionParams } from './dto/emotion.dto';
 import { EmotionService } from './emotion.service';
 
 @Controller('emotions')
@@ -44,5 +44,18 @@ export class EmotionController {
       throw new UnauthorizedException('You can only update your own emotions');
     }
     return await this.emotionService.update(emotion, dto);
+  }
+
+  @Delete(':emotionId')
+  public async delete(@ReqUser() user: User, @Param() params: DeleteEmotionParams) {
+    const ability = this.abilityFactory.createForUser(user);
+    const emotion = await this.emotionService.findById(params.emotionId);
+    if (!emotion) {
+      throw new NotFoundException(`Emotion with ID ${params.emotionId} not found`);
+    }
+    if (ability.cannot(Action.DELETE, emotion)) {
+      throw new UnauthorizedException('You can only delete your own emotions');
+    }
+    await this.emotionService.delete(emotion);
   }
 }
