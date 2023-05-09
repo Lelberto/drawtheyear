@@ -14,7 +14,7 @@ export class CreateEmotionDTO {
 
 export class UpdateEmotionDTO extends PartialType(CreateEmotionDTO) {}
 
-export class UpdateEmotionParams {
+export class EmotionParams {
 
   @IsNumberString()
   emotionId: number;
