@@ -23,27 +23,37 @@ export class UserController {
   }
 
   @Get()
-  public async findAll() {
+  @UseGuards(JwtAuthGuard)
+  public async findAll(@ReqUser() authUser: User) {
+    const ability = this.abilityFactory.createForUser(authUser);
+    if (ability.cannot(Action.READ, User)) {
+      throw new UnauthorizedException();
+    }
     return await this.userService.findAll();
   }
 
   @Get(':username')
-  public findByUsername(@Param('username', ResolveUserPipe) user: User) {
+  @UseGuards(JwtAuthGuard)
+  public findByUsername(@ReqUser() authUser: User, @Param('username', ResolveUserPipe) user: User) {
+    const ability = this.abilityFactory.createForUser(authUser);
+    if (ability.cannot(Action.READ, User)) {
+      throw new UnauthorizedException();
+    }
     return user;
   }
 
   @Post()
-  public async create(@Body() dto: CreateUserDTO) {
-    return await this.userService.create(dto);
+  public async create(@Body() body: CreateUserDTO) {
+    return await this.userService.create(body);
   }
 
   @Patch(':username')
   @UseGuards(JwtAuthGuard)
-  public async update(@ReqUser() authUser: User, @Param('username', ResolveUserPipe) user: User, @Body() dto: UpdateUserDTO) {
+  public async update(@ReqUser() authUser: User, @Param('username', ResolveUserPipe) user: User, @Body() body: UpdateUserDTO) {
     const ability = this.abilityFactory.createForUser(authUser);
     if (ability.cannot(Action.UPDATE, user)) {
       throw new UnauthorizedException('You can\'t update this user');
     }
-    return await this.userService.update(user, dto);
+    return await this.userService.update(user, body);
   }
 }
