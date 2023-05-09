@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 
 @Controller('me')
 @UseInterceptors(ClassSerializerInterceptor, ResponseFormatterInterceptor)
+@UseGuards(JwtAuthGuard)
 @UsePipes(ValidationPipe)
 export class MeController {
 
@@ -18,14 +19,12 @@ export class MeController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
-  public async getProfile(@ReqUser() user: User) {
-    return user;
+  public async getProfile(@ReqUser() authUser: User) {
+    return authUser;
   }
 
   @Patch()
-  @UseGuards(JwtAuthGuard)
-  public async update(@ReqUser('username') username: string, @Body() dto: UpdateUserDTO) {
-    await this.userService.update(username, dto);
+  public async update(@ReqUser() authUser: User, @Body() dto: UpdateUserDTO) {
+    await this.userService.update(authUser, dto);
   }
 }

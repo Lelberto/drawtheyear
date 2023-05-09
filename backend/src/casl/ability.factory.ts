@@ -17,6 +17,8 @@ export class AbilityFactory {
           can(Action.MANAGE, 'all');
           break;
         case Role.USER:
+          can(Action.READ, User);
+          can(Action.UPDATE, User, { id: user.id });
           can(Action.READ, Emotion);
           can(Action.CREATE, Emotion);
           can(Action.UPDATE, Emotion, { userId: user.id });

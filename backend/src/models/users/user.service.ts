@@ -42,8 +42,8 @@ export class UserService {
     return await this.userRepo.save(user);
   }
 
-  public async update(username: string, data: Partial<User>): Promise<void> {
-    await this.userRepo.update({ username }, data);
+  public async update(user: User, data: Partial<User>): Promise<void> {
+    await this.userRepo.save({ ...user, ...data });
   }
 
   public async formatUsername(username: string): Promise<string> {

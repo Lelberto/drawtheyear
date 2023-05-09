@@ -1,7 +1,13 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Post, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UpdateUserParams, CreateUserDTO, FindByUsernameParams, UpdateUserDTO } from './dto/user.dto';
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ResponseFormatterInterceptor } from '../../common/interceptors/response-formatter.interceptor';
+import { ResolveUserPipe } from '../../common/pipes/resolve-user.pipe';
+import { CreateUserDTO, UpdateUserDTO } from './dto/user.dto';
+import { User } from './entities/user.entity';
+import { UserService } from './user.service';
+import { AbilityFactory } from '../../casl/ability.factory';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ReqUser } from '../../common/decorators/request-user.decorator';
+import { Action } from '../../casl/action.enum';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor, ResponseFormatterInterceptor)
@@ -9,9 +15,11 @@ import { ResponseFormatterInterceptor } from '../../common/interceptors/response
 export class UserController {
 
   private readonly userService: UserService;
+  private readonly abilityFactory: AbilityFactory;
 
-  public constructor(userService: UserService) {
+  public constructor(userService: UserService, abilityFactory: AbilityFactory) {
     this.userService = userService;
+    this.abilityFactory = abilityFactory;
   }
 
   @Get()
@@ -20,8 +28,8 @@ export class UserController {
   }
 
   @Get(':username')
-  public async findByUsername(@Param() params: FindByUsernameParams) {
-    return await this.userService.findByUsername(params.username);
+  public findByUsername(@Param(ResolveUserPipe) user: User) {
+    return user;
   }
 
   @Post()
@@ -30,7 +38,12 @@ export class UserController {
   }
 
   @Patch(':username')
-  public async update(@Param() params: UpdateUserParams, @Body() dto: UpdateUserDTO) {
-    await this.userService.update(params.username, dto);
+  @UseGuards(JwtAuthGuard)
+  public async update(@ReqUser() authUser: User, @Param(ResolveUserPipe) user: User, @Body() dto: UpdateUserDTO) {
+    const ability = this.abilityFactory.createForUser(authUser);
+    if (ability.cannot(Action.UPDATE, user)) {
+      throw new UnauthorizedException('You can\'t update this user');
+    }
+    return await this.userService.update(user, dto);
   }
 }

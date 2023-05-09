@@ -26,13 +26,7 @@ export class UpdateUserDTO extends PartialType(
   OmitType(CreateUserDTO, ['email', 'password'])
 ) {}
 
-export class FindByUsernameParams {
-
-  @IsString()
-  username: string;
-}
-
-export class UpdateUserParams {
+export class UsernameParams {
 
   @IsString()
   username: string;

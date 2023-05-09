@@ -6,9 +6,10 @@ import { UserRepository } from './repositories/user.repository';
 import { UserController } from './user.controller';
 import { CryptoModule } from '../../crypto/crypto.module';
 import { MeController } from './me.controller';
+import { CASLModule } from '../../casl/casl.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), CryptoModule],
+  imports: [TypeOrmModule.forFeature([User]), CryptoModule, CASLModule],
   providers: [UserService, UserRepository],
   controllers: [UserController, MeController],
   exports: [UserService]
