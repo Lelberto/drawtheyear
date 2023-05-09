@@ -2,6 +2,7 @@ import { Exclude } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Emotion } from '../../emotions/entities/emotion.entity';
 import { Role } from '../../../common/constants/role.enum';
+import { Day } from '../../days/entities/day.entity';
 
 @Entity({
   name: 'users'
@@ -14,9 +15,6 @@ export class User {
 
   @PrimaryGeneratedColumn()
   id: number;
-
-  @OneToMany(() => Emotion, emotion => emotion.user)
-  emotions: Emotion[];
 
   @Column({
     type: 'enum',
@@ -51,4 +49,10 @@ export class User {
     length: 32
   })
   displayName: string;
+
+  @OneToMany(() => Emotion, emotion => emotion.user)
+  emotions: Emotion[];
+
+  @OneToMany(() => Day, day => day.user)
+  days: Day[];
 }

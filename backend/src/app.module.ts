@@ -4,6 +4,7 @@ import { ConfigurationModule } from './config/configuration.module';
 import { DatabaseModule } from './database/database.module';
 import { EmotionModule } from './models/emotions/emotion.module';
 import { UserModule } from './models/users/user.module';
+import { DayModule } from './models/days/day.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { UserModule } from './models/users/user.module';
     DatabaseModule,
     AuthModule,
     UserModule,
-    EmotionModule
+    EmotionModule,
+    DayModule
   ]
 })
 export class AppModule implements OnModuleInit {

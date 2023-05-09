@@ -12,10 +12,6 @@ export class Emotion {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, user => user.emotions)
-  @Exclude({ toPlainOnly: true })
-  user: User;
-
   @Column()
   userId: number;
 
@@ -37,4 +33,8 @@ export class Emotion {
     return value;
   })
   color: string;
+
+  @ManyToOne(() => User, user => user.emotions)
+  @Exclude({ toPlainOnly: true })
+  user: User;
 }
