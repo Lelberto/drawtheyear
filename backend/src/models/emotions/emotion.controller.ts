@@ -1,4 +1,6 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Post, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, NotFoundException, Param, Patch, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { AbilityFactory } from '../../casl/ability.factory';
+import { Action } from '../../casl/action.enum';
 import { ReqUser } from '../../common/decorators/request-user.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -14,14 +16,16 @@ import { EmotionService } from './emotion.service';
 export class EmotionController {
 
   private readonly emotionService: EmotionService;
+  private readonly abilityFactory: AbilityFactory;
 
-  public constructor(emotionService: EmotionService) {
+  public constructor(emotionService: EmotionService, abilityFactory: AbilityFactory) {
     this.emotionService = emotionService;
+    this.abilityFactory = abilityFactory;
   }
 
   @Get()
-  public async findAll() {
-    return await this.emotionService.findAll();
+  public async findAll(@ReqUser() user: User) {
+    return await this.emotionService.findByUser(user);
   }
 
   @Post()
@@ -31,6 +35,14 @@ export class EmotionController {
 
   @Patch(':emotionId')
   public async update(@ReqUser() user: User,  @Param() params: UpdateEmotionParams, @Body() dto: UpdateEmotionDTO) {
-    await this.emotionService.update(user, params.emotionId, dto);
+    const ability = this.abilityFactory.createForUser(user);
+    const emotion = await this.emotionService.findById(params.emotionId);
+    if (!emotion) {
+      throw new NotFoundException(`Emotion with ID ${params.emotionId} not found`);
+    }
+    if (ability.cannot(Action.UPDATE, emotion)) {
+      throw new UnauthorizedException('You can only update your own emotions');
+    }
+    return await this.emotionService.update(emotion, dto);
   }
 }

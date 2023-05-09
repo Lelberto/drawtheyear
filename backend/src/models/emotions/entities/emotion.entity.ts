@@ -1,15 +1,23 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Transform } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 
 @Entity({ name: 'emotions' })
 export class Emotion {
+
+  static get modelName() {
+    return 'Emotion';
+  }
 
   @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => User, user => user.emotions)
+  @Exclude({ toPlainOnly: true })
   user: User;
+
+  @Column()
+  userId: number;
 
   @Column({
     type: 'varchar',

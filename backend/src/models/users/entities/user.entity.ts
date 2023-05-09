@@ -8,6 +8,10 @@ import { Role } from '../../../common/constants/role.enum';
 })
 export class User {
 
+  static get modelName() {
+    return 'User';
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
