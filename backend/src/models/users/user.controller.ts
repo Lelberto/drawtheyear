@@ -28,7 +28,7 @@ export class UserController {
   }
 
   @Get(':username')
-  public findByUsername(@Param(ResolveUserPipe) user: User) {
+  public findByUsername(@Param('username', ResolveUserPipe) user: User) {
     return user;
   }
 
