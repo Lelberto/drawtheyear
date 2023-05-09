@@ -5,9 +5,11 @@ import { EmotionController } from './emotion.controller';
 import { CASLModule } from '../../casl/casl.module';
 import { UserEmotionController } from './user-emotion.controller';
 import { UserModule } from '../users/user.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Emotion } from './entities/emotion.entity';
 
 @Module({
-  imports: [UserModule, CASLModule],
+  imports: [TypeOrmModule.forFeature([Emotion]), UserModule, CASLModule],
   providers: [EmotionService, EmotionRepository],
   controllers: [EmotionController, UserEmotionController],
   exports: [EmotionService]
