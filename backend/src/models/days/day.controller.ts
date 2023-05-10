@@ -35,34 +35,39 @@ export class DayController {
     if (ability.cannot(Action.READ, Day)) {
       throw new UnauthorizedException();
     }
+
     return await this.dayService.findAll(authUser);
   }
 
   @Get(':date')
   public async findByDate(@ReqUser() authUser: User, @Param('date') date: Date) {
-    const ability = this.abilityFactory.createForUser(authUser);
     const day = await this.dayService.findByDate(authUser, date);
     if (!day) {
       throw new NotFoundException(`Day "${date}" not found`);
     }
+
+    const ability = this.abilityFactory.createForUser(authUser);
     if (ability.cannot(Action.READ, day)) {
       throw new UnauthorizedException();
     }
+
     return day;
   }
 
   @Post()
   public async create(@ReqUser() authUser: User, @Body() body: CreateDayDTO) {
-    const ability = this.abilityFactory.createForUser(authUser);
-    if (ability.cannot(Action.CREATE, Day)) {
-      throw new UnauthorizedException();
-    }
     if (await this.dayService.exists(authUser, body.date)) {
       throw new BadRequestException(`Day "${body.date}" already exists`);
     }
     if (!this.dateHelper.isValid(body.date)) {
       throw new BadRequestException(`Day "${body.date} is not valid"`);
     }
+
+    const ability = this.abilityFactory.createForUser(authUser);
+    if (ability.cannot(Action.CREATE, Day)) {
+      throw new UnauthorizedException();
+    }
+
     return await this.dayService.create(authUser, body);
   }
 

@@ -32,19 +32,22 @@ export class UserDayController {
     if (ability.cannot(Action.READ, user) || ability.cannot(Action.READ, Day)) {
       throw new UnauthorizedException();
     }
+
     return await this.dayService.findAll(user);
   }
 
   @Get(':date')
   public async findByDate(@ReqUser() authUser: User, @Param('username', ResolveUserPipe) user: User, @Param('date') date: Date) {
-    const ability = this.abilityFactory.createForUser(authUser);
     const day = await this.dayService.findByDate(user, date);
     if (!day) {
       throw new NotFoundException(`Day "${date}" not found`);
     }
+
+    const ability = this.abilityFactory.createForUser(authUser);
     if (ability.cannot(Action.READ, user) || ability.cannot(Action.READ, day)) {
       throw new UnauthorizedException();
     }
+
     return day;
   }
 
@@ -54,6 +57,7 @@ export class UserDayController {
     if (ability.cannot(Action.UPDATE, user) || ability.cannot(Action.CREATE, Day)) {
       throw new UnauthorizedException();
     }
+    
     return await this.dayService.create(user, body);
   }
 

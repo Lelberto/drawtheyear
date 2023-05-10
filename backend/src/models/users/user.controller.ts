@@ -29,6 +29,7 @@ export class UserController {
     if (ability.cannot(Action.READ, User)) {
       throw new UnauthorizedException();
     }
+
     return await this.userService.findAll();
   }
 
@@ -39,6 +40,7 @@ export class UserController {
     if (ability.cannot(Action.READ, User)) {
       throw new UnauthorizedException();
     }
+
     return user;
   }
 
@@ -54,6 +56,7 @@ export class UserController {
     if (ability.cannot(Action.UPDATE, user)) {
       throw new UnauthorizedException('You can\'t update this user');
     }
+
     return await this.userService.update(user, body);
   }
 }

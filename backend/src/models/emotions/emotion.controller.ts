@@ -30,6 +30,7 @@ export class EmotionController {
     if (ability.cannot(Action.READ, Emotion)) {
       throw new UnauthorizedException();
     }
+
     return await this.emotionService.findByUser(authUser);
   }
 
@@ -39,6 +40,7 @@ export class EmotionController {
     if (ability.cannot(Action.READ, emotion)) {
       throw new UnauthorizedException();
     }
+
     return emotion;
   }
 
@@ -48,6 +50,7 @@ export class EmotionController {
     if (ability.cannot(Action.CREATE, Emotion)) {
       throw new UnauthorizedException();
     }
+
     return await this.emotionService.create(authUser, body);
   }
 
@@ -57,6 +60,7 @@ export class EmotionController {
     if (ability.cannot(Action.UPDATE, emotion)) {
       throw new UnauthorizedException('You can only update your own emotions');
     }
+
     return await this.emotionService.update(emotion, body);
   }
 
@@ -66,6 +70,7 @@ export class EmotionController {
     if (ability.cannot(Action.DELETE, emotion)) {
       throw new UnauthorizedException('You can only delete your own emotions');
     }
+
     await this.emotionService.delete(emotion);
   }
 }

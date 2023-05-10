@@ -30,6 +30,7 @@ export class UserEmotionController {
     if (ability.cannot(Action.READ, user) || ability.cannot(Action.READ, Emotion)) {
       throw new UnauthorizedException();
     }
+
     return await this.emotionService.findByUser(user);
   }
 
@@ -39,6 +40,7 @@ export class UserEmotionController {
     if (ability.cannot(Action.UPDATE, user) || ability.cannot(Action.CREATE, Emotion)) {
       throw new UnauthorizedException();
     }
+
     return await this.emotionService.create(authUser, body);
   }
 }
