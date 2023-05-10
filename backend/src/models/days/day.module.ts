@@ -8,9 +8,10 @@ import { DayController } from './day.controller';
 import { UserModule } from '../users/user.module';
 import { CASLModule } from '../../casl/casl.module';
 import { DateHelper } from './date.helper';
+import { EmotionModule } from '../emotions/emotion.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Day]), UserModule, CASLModule],
+  imports: [TypeOrmModule.forFeature([Day]), UserModule, EmotionModule, CASLModule],
   providers: [DayService, DayRepository, DateHelper],
   controllers: [DayController, UserDayController],
   exports: [DayService]

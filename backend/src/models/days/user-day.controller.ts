@@ -1,13 +1,15 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
-import { DayService } from './day.service';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { ResponseFormatterInterceptor } from '../../common/interceptors/response-formatter.interceptor';
-import { ReqUser } from '../../common/decorators/request-user.decorator';
-import { User } from '../users/entities/user.entity';
-import { ResolveUserPipe } from '../../common/pipes/resolve-user.pipe';
-import { CreateDayDTO } from './dto/day.dto';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, NotFoundException, Param, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AbilityFactory } from '../../casl/ability.factory';
 import { Action } from '../../casl/action.enum';
+import { ReqUser } from '../../common/decorators/request-user.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ResponseFormatterInterceptor } from '../../common/interceptors/response-formatter.interceptor';
+import { ResolveEmotionPipe } from '../../common/pipes/resolve-emotion.pipe';
+import { ResolveUserPipe } from '../../common/pipes/resolve-user.pipe';
+import { Emotion } from '../emotions/entities/emotion.entity';
+import { User } from '../users/entities/user.entity';
+import { DayService } from './day.service';
+import { AddEmotionDTO, CreateDayDTO, RemoveEmotionDTO } from './dto/day.dto';
 import { Day } from './entities/day.entity';
 
 @Controller('users/:username/days')
@@ -37,6 +39,9 @@ export class UserDayController {
   public async findByDate(@ReqUser() authUser: User, @Param('username', ResolveUserPipe) user: User, @Param('date') date: Date) {
     const ability = this.abilityFactory.createForUser(authUser);
     const day = await this.dayService.findByDate(user, date);
+    if (!day) {
+      throw new NotFoundException(`Day "${date}" not found`);
+    }
     if (ability.cannot(Action.READ, user) || ability.cannot(Action.READ, day)) {
       throw new UnauthorizedException();
     }
@@ -50,5 +55,47 @@ export class UserDayController {
       throw new UnauthorizedException();
     }
     return await this.dayService.create(user, body);
+  }
+
+  @Post(':date/emotions')
+  public async addEmotion(
+    @ReqUser() authUser: User,
+    @Param('username', ResolveUserPipe) user: User,
+    @Param('date') date: Date,
+    @Body() body: AddEmotionDTO,
+    @Body('emotionId', ResolveEmotionPipe) emotion: Emotion
+  ) {
+    const day = await this.dayService.findByDate(user, date);
+    if (!day) {
+      throw new NotFoundException(`Day "${date}" not found`);
+    }
+
+    const ability = this.abilityFactory.createForUser(authUser);
+    if (ability.cannot(Action.UPDATE, day) || ability.cannot(Action.UPDATE, emotion)) {
+      throw new UnauthorizedException();
+    }
+
+    return await this.dayService.addEmotion(day, emotion);
+  }
+
+  @Delete(':date/emotions')
+  public async removeEmotion(
+    @ReqUser() authUser: User,
+    @Param('username', ResolveUserPipe) user: User,
+    @Param('date') date: Date,
+    @Body() body: RemoveEmotionDTO,
+    @Body('emotionId', ResolveEmotionPipe) emotion: Emotion
+  ) {
+    const day = await this.dayService.findByDate(user, date);
+    if (!day) {
+      throw new NotFoundException(`Day "${date}" not found`);
+    }
+
+    const ability = this.abilityFactory.createForUser(authUser);
+    if (ability.cannot(Action.UPDATE, day) || ability.cannot(Action.UPDATE, emotion)) {
+      throw new UnauthorizedException();
+    }
+
+    return await this.dayService.removeEmotion(day, emotion);
   }
 }
