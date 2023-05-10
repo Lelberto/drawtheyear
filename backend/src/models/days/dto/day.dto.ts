@@ -13,5 +13,5 @@ export class CreateDayDTO {
 export class DayParams {
 
   @IsDateString()
-  date: Date
+  date: Date;
 }
