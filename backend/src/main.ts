@@ -5,12 +5,14 @@ import { WinstonModule, utilities } from 'nest-winston';
 import * as winston from 'winston';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import logConfig from './config/log.config';
+import { RequestLoggerInterceptor } from './common/interceptors/request-logger.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   const config = app.get(ConfigService);
 
   app.useLogger(createLogger(config.get<ConfigType<typeof logConfig>>('log').path));
+  app.useGlobalInterceptors(new RequestLoggerInterceptor());
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('DrawTheYear API')

@@ -5,6 +5,7 @@ import { DatabaseModule } from './database/database.module';
 import { EmotionModule } from './models/emotions/emotion.module';
 import { UserModule } from './models/users/user.module';
 import { DayModule } from './models/days/day.module';
+import { Context } from './common/constants/logger.constants';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { DayModule } from './models/days/day.module';
 })
 export class AppModule implements OnModuleInit {
 
-  private readonly logger = new Logger(AppModule.name);
+  private readonly logger = new Logger(Context.APPLICATION);
 
   public onModuleInit() {
     this.logger.log(`Environment : ${process.env.NODE_ENV}`);
