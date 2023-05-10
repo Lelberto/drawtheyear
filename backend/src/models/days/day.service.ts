@@ -24,4 +24,8 @@ export class DayService {
     const day = this.dayRepo.create({ ...data, user });
     return await this.dayRepo.save(day);
   }
+
+  public async exists(user: User, date: Date): Promise<boolean> {
+    return await this.dayRepo.exist({ where: { userId: user.id, date } });
+  }
 }
