@@ -7,10 +7,11 @@ import { UserDayController } from './user-day.controller';
 import { DayController } from './day.controller';
 import { UserModule } from '../users/user.module';
 import { CASLModule } from '../../casl/casl.module';
+import { DateHelper } from './date.helper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Day]), UserModule, CASLModule],
-  providers: [DayService, DayRepository],
+  providers: [DayService, DayRepository, DateHelper],
   controllers: [DayController, UserDayController],
   exports: [DayService]
 })

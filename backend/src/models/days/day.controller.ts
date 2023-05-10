@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UnauthorizedException, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ReqUser } from '../../common/decorators/request-user.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { ResponseFormatterInterceptor } from '../../common/interceptors/response-formatter.interceptor';
@@ -8,6 +8,7 @@ import { CreateDayDTO } from './dto/day.dto';
 import { AbilityFactory } from '../../casl/ability.factory';
 import { Action } from '../../casl/action.enum';
 import { Day } from './entities/day.entity';
+import { DateHelper } from './date.helper';
 
 @Controller('days')
 @UseInterceptors(ClassSerializerInterceptor, ResponseFormatterInterceptor)
@@ -16,10 +17,12 @@ import { Day } from './entities/day.entity';
 export class DayController {
 
   private readonly dayService: DayService;
+  private readonly dateHelper: DateHelper;
   private readonly abilityFactory: AbilityFactory;
 
-  public constructor(dayService: DayService, abilityFactory: AbilityFactory) {
+  public constructor(dayService: DayService, dateHelper: DateHelper, abilityFactory: AbilityFactory) {
     this.dayService = dayService;
+    this.dateHelper = dateHelper;
     this.abilityFactory = abilityFactory;
   }
 
@@ -47,6 +50,12 @@ export class DayController {
     const ability = this.abilityFactory.createForUser(authUser);
     if (ability.cannot(Action.CREATE, Day)) {
       throw new UnauthorizedException();
+    }
+    if (await this.dayService.exists(authUser, body.date)) {
+      throw new BadRequestException(`Day "${body.date}" already exists`);
+    }
+    if (!this.dateHelper.isValid(body.date)) {
+      throw new BadRequestException(`Day "${body.date} is not valid"`);
     }
     return await this.dayService.create(authUser, body);
   }
