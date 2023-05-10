@@ -1,8 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
 import { Exclude, Transform } from 'class-transformer';
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Day } from '../../days/entities/day.entity';
+import { User } from '../../users/entities/user.entity';
 
-@Entity({ name: 'emotions' })
+@Entity({ name: 'emotion' })
 export class Emotion {
 
   static get modelName() {
@@ -37,4 +38,7 @@ export class Emotion {
   @ManyToOne(() => User, user => user.emotions)
   @Exclude({ toPlainOnly: true })
   user: User;
+
+  @ManyToMany(() => Day, day => day.emotions)
+  days: Day[];
 }

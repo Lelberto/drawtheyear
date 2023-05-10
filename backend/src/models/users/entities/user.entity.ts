@@ -4,9 +4,7 @@ import { Emotion } from '../../emotions/entities/emotion.entity';
 import { Role } from '../../../common/constants/role.enum';
 import { Day } from '../../days/entities/day.entity';
 
-@Entity({
-  name: 'users'
-})
+@Entity({ name: 'user' })
 export class User {
 
   static get modelName() {
