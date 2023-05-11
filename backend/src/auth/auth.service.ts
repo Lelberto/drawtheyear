@@ -4,15 +4,23 @@ import { User } from '../models/users/entities/user.entity';
 import { CryptoService } from '../crypto/crypto.service';
 import { JwtService } from '@nestjs/jwt';
 import { AccessTokenPayload, RefreshTokenPayload } from '../common/constants/jwt.constants';
+import { ApplicationService } from '../models/applications/application.service';
 
 @Injectable()
 export class AuthService {
 
+  private readonly applicationService: ApplicationService;
   private readonly userService: UserService;
   private readonly cryptoService: CryptoService;
   private readonly jwtService: JwtService;
 
-  public constructor(userService: UserService, cryptoService: CryptoService, jwtService: JwtService) {
+  public constructor(
+    applicationService: ApplicationService,
+    userService: UserService,
+    cryptoService: CryptoService,
+    jwtService: JwtService
+  ) {
+    this.applicationService = applicationService;
     this.userService = userService;
     this.cryptoService = cryptoService;
     this.jwtService = jwtService;
@@ -32,5 +40,10 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(accessTokenPayload),
       refresh_token: await this.jwtService.signAsync(refreshTokenPayload)
     }
+  }
+
+  public async getCallbackUrl(appId: number): Promise<string> {
+    const app = await this.applicationService.findById(appId);
+    return app?.loginCallbackUrl;
   }
 }

@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from '../common/guards/local-auth.guard';
-import { AuthService } from './auth.service';
+import { BadRequestException, Controller, Get, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { ReqUser } from '../common/decorators/request-user.decorator';
 import { GoogleAuthGuard } from '../common/guards/google-auth.guard';
-import { Request } from 'express';
+import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { User } from '../models/users/entities/user.entity';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +29,21 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  public async googleLoginCallback(@Req() req: Request, @Query('state') state: any) {
-    return await this.authService.login(req.user as User);
+  public async googleLoginCallback(
+    @ReqUser() user: any,
+    @Query('state') state: string,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const stateQuery = new URLSearchParams(state);
+    const appId = stateQuery.get('appId');
+    const tokens = await this.authService.login(user);
+    if (appId) {
+      const callbackUrl = await this.authService.getCallbackUrl(parseInt(appId));
+      if (!callbackUrl) {
+        throw new BadRequestException(`Invalid application ID "${appId}"`);
+      }
+      return res.redirect(callbackUrl);
+    }
+    return tokens;
   }
 }

@@ -10,9 +10,11 @@ import { ConfigService, ConfigType } from '@nestjs/config';
 import authConfig from '../config/auth.config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { ApplicationModule } from '../models/applications/application.module';
 
 @Module({
   imports: [
+    ApplicationModule,
     UserModule,
     CryptoModule,
     PassportModule,
