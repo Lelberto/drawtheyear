@@ -9,6 +9,7 @@ import logConfig from '../config/log.config';
 import { User } from '../models/users/entities/user.entity';
 import { Emotion } from '../models/emotions/entities/emotion.entity';
 import { Day } from '../models/days/entities/day.entity';
+import { Application } from '../models/applications/entities/application.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { Day } from '../models/days/entities/day.entity';
         username: config.get<ConfigType<typeof databaseConfig>>('database').user,
         password: config.get<ConfigType<typeof databaseConfig>>('database').password,
         database: config.get<ConfigType<typeof databaseConfig>>('database').db,
-        entities: [User, Emotion, Day],
+        entities: [Application, User, Emotion, Day],
         synchronize: true,
         namingStrategy: new SnakeNamingStrategy(),
         logging: true,

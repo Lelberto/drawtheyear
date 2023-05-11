@@ -6,12 +6,14 @@ import { EmotionModule } from './models/emotions/emotion.module';
 import { UserModule } from './models/users/user.module';
 import { DayModule } from './models/days/day.module';
 import { Context } from './common/constants/logger.constants';
+import { ApplicationModule } from './models/applications/application.module';
 
 @Module({
   imports: [
     ConfigurationModule,
     DatabaseModule,
     AuthModule,
+    ApplicationModule,
     UserModule,
     EmotionModule,
     DayModule
