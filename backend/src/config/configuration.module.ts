@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import databaseConfig from './database.config';
 import authConfig from './auth.config';
-import logConfig from './log.config';
+import databaseConfig from './database.config';
 import dayConfig from './day.config';
+import logConfig from './log.config';
 
 @Module({
   imports: [
