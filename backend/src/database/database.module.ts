@@ -16,7 +16,7 @@ import { Application } from '../models/applications/entities/application.entity'
     TypeOrmModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        host: 'dty_database',
+        host: config.get<ConfigType<typeof databaseConfig>>('database').host,
         port: 5432,
         username: config.get<ConfigType<typeof databaseConfig>>('database').user,
         password: config.get<ConfigType<typeof databaseConfig>>('database').password,
