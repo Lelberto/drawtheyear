@@ -11,4 +11,10 @@ export class Application {
     length: 30
   })
   name: string;
+
+  @Column({
+    type: 'varchar',
+    length: 100
+  })
+  loginCallbackUrl: string;
 }
