@@ -42,7 +42,10 @@ export class AuthController {
       if (!callbackUrl) {
         throw new BadRequestException(`Invalid application ID "${appId}"`);
       }
-      return res.redirect(callbackUrl);
+      const params = new URLSearchParams();
+      params.set('access_token', tokens.access_token);
+      params.set('refresh_token', tokens.refresh_token);
+      return res.redirect(`${callbackUrl}?${params.toString()}`);
     }
     return tokens;
   }
