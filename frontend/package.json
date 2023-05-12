@@ -13,7 +13,8 @@
     "@react-oauth/google": "^0.11.0",
     "axios": "^1.4.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.0.0-rc.1"
   },
   "devDependencies": {
     "@types/node": "^18.16.3",
